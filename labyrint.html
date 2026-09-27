@@ -3,41 +3,169 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Smooch+Sans:wght@100..900&display=swap"
+        rel="stylesheet">
+    <script src="labyrint/js/maze.js"></script>
     <style>
-        #page{
+        h1,
+        h2 {
+            font-family: Pixelify Sans;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        maze-canvas {
+            border-radius: 1vw;
+            border: 10px solid rgb(118, 77, 41);
+            background-color: #64A853;
+            box-shadow: 5px 5px;
+        }
+
+        .info {
+            background-color: #ddd;
+            box-shadow: 5px 5px;
+            border-radius: 1vw;
+            border: 10px solid #ddd;
+            max-width: 40vw;
+        }
+
+        .flex2 {
             display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .flex3 {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .button {
+            background-image: url(img/btn.png);
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            height: 56px;
+            width: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        img{
+            user-select: none;
+        }
+        
+        img:hover {
+            filter: brightness(0.8);            
+        }
+
+        img:hover:active{
+            transform: translate(1px, 1px);
         }
     </style>
 </head>
 
 <body>
-    <div id="page">
-        <div>
-            <maze-canvas size="3"></maze-canvas>
-        </div>
-        <div>
-            <h1>Innebygde kommandoer</h1>
-            <maze-commands></maze-commands>
+    <div class="flex2">
+        <maze-canvas size="6"></maze-canvas>
+        <div class="info">
+
         </div>
     </div>
-    <!-- <code-editor></code-editor> -->
-
-    <script src="js/codeEditor.js"></script>
-    <script src="js/maze-canvas.js"></script>
-    <script src="js/maze-commands.js"></script>
     <script>
-        const mazeCanvas = document.getElementsByTagName('maze-canvas')[0];
-        const mazeCommands = document.getElementsByTagName('maze-commands')[0];
-        //const mazeCustomCommands = document.getElementsByTagName('maze-custom-commands')[0];
-        const gå = mazeCanvas.gå.bind(mazeCanvas);
-        const snuHøyre = mazeCanvas.snuHøyre.bind(mazeCanvas);
-        const erVedUtgang = mazeCanvas.erVedUtgang.bind(mazeCanvas);
-        mazeCommands.onclick = code => eval(code);
-        //mazeCustomCommands.onclick = code => eval(code);
+        let level = 1;
+        const maze = document.querySelector('maze-canvas');
+        const gå = maze.gå.bind(maze);
+        const snuHøyre = maze.snuHøyre.bind(maze);
+        const erVedUtgang = maze.erVedUtgang.bind(maze);
+        const init = maze.init.bind(maze);
+        const allContent = [
+            {
+                videoId: 'reaUet6DTvQ',
+                videoText: 'Se videoen for å lære om de innebygde kommandoene <tt>gå()</tt> og <tt>snuHøyre()</tt> - og lære hvordan du kan sette dem sammen til nye kommandoer.',
+                exercise: '<p>Åpne utviklerverktøy ved å trykke F12 og finn arkfanen for <b>Console</b>. Test ut de innebygde kommandoene <tt>gå()</tt> og <tt>snuHøyre()</tt>.</p> Lag funksjonen <tt>snuVenstre()</tt>. Bruk det du har lært i videoen om hvordan du lager egne kommandoer. Hvor mange ganger må du snu til høyre - for å ha snudd til venstre?',
+            },
+            {
+                videoId: 'lt7K0tuKBTs',
+                videoText: 'Se videoen for å lære om variabler, verdier og operatoren for addisjon (pluss).',
+                exercise: `Lag en funksjon som:
+                    <ul>
+                        <li>går så langt det er mulig i en retning,</li>
+                        <li>snur 180 grader</li>
+                        <li>og går like langt tilbake.</li>
+                    </ul>
+                    `
+            },
+            {
+                videoId: 'L3jSbUG-DdM',
+                videoText: 'Se videoen for å lære om if-setninger, logiske verdier og sammenligninger.',
+                exercise: `Lag funksjonen <tt>følgVeggenTilHøyre()</tt>. 
+                    <ul>
+                        <li>Den snur seg mot høyre og forsøker <tt>gå()</tt>.<br/>Hvis det gikk bra, er den ferdig!</li>
+                        <li>Ellers snur den seg tilbake og forsøker gå().<br/>Hvis det gikk bra, er den ferdig!</li>
+                        <li>Ellers snur den seg mot venstre og går - og er ferdig!</li>
+                    </ul>        
+                `,
+            },
+            {
+                videoId: 'oPkHyOg57UQ',
+                videoText: 'Se videoen for å lære om løkker',
+                exercise: `
+                    Hvis du vil lære mer om programmering, les om <a target="_new" href="https://getacademy.no/">GET Academy</a> og meld deg på!                
+                `,
+            },
+        ]
+
+        const imageNames = [
+            'closed-down', 'closed-right', 'closed-up', 'closed-left',
+            'down-left',
+            'left-right1', 'left-right2', 'left-right3', 'left-right4',
+            'down', 'left', 'right', 'up',
+            'end-chest', 'end-empty', 'start',
+            'right-down',
+            'up-down1', 'up-down2', 'up-down3', 'up-down4',
+            'up-left', 'up-right', 'open',
+            'robot-down', 'robot-left', 'robot-right', 'robot-up',
+            'arrow-up', 'arrow-down', 'arrow-left', 'arrow-right'
+
+        ];
+        let images = {};
+        let loadedImages = 0;
+        function handleLoadedImg() {
+            loadedImages++;
+            if (loadedImages === imageNames.length) {
+                maze.drawLabyrinth();
+            }
+        };
+
+        // loadImg('img/get.png', 'get');
+        for (let fileName of imageNames) {
+            loadImg(`labyrint/img/${fileName}.png`, fileName);
+        }
+
+        function loadImg(url, name) {
+            const img = new Image();
+            img.src = url;
+            img.onload = handleLoadedImg;
+            img.onerror = () => {
+                console.error(`Feil ved lasting av bilde: ${url}`);
+            };
+            images[name] = img;
+        }
     </script>
+
 </body>
 
 </html>

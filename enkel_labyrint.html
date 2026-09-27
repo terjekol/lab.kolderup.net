@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #page{
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="page">
+        <div>
+            <maze-canvas size="3"></maze-canvas>
+        </div>
+        <div>
+            <h1>Innebygde kommandoer</h1>
+            <maze-commands></maze-commands>
+        </div>
+    </div>
+    <!-- <code-editor></code-editor> -->
+
+    <script src="js/codeEditor.js"></script>
+    <script src="js/maze-canvas.js"></script>
+    <script src="js/maze-commands.js"></script>
+    <script>
+        const mazeCanvas = document.getElementsByTagName('maze-canvas')[0];
+        const mazeCommands = document.getElementsByTagName('maze-commands')[0];
+        //const mazeCustomCommands = document.getElementsByTagName('maze-custom-commands')[0];
+        const gå = mazeCanvas.gå.bind(mazeCanvas);
+        const snuHøyre = mazeCanvas.snuHøyre.bind(mazeCanvas);
+        const erVedUtgang = mazeCanvas.erVedUtgang.bind(mazeCanvas);
+        mazeCommands.onclick = code => eval(code);
+        //mazeCustomCommands.onclick = code => eval(code);
+    </script>
+</body>
+
+</html>

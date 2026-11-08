@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python og canvas med Brython – Interaktiv programmering for skolen</title>
+    <style>
+        html, body {
+            margin: 0;
+            min-height: 100%;
+            background-color: lightblue;
+        }
+
+        body {
+            padding: 20px;
+            font-family: sans-serif;
+        }
+
+        canvas {
+            width: 440px;
+            height: 320px;
+            background-color: white;
+            image-rendering: pixelated;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.15.0/brython.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3.15.0/brython_stdlib.js"></script>
+</head>
+<body onload="brython()">
+    <h1>Norsk flagg tegnet med Python</h1>
+    <canvas id="canvas" width="110" height="80"></canvas>
+
+    <script type="text/python" src="pythonTegne.py"></script>
+</body>
+</html>

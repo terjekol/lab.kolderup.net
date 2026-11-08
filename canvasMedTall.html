@@ -1,30 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="no">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canvas med tall - playterje.com</title>
+    <title>Canvas med tall – Interaktiv programmering for skolen</title>
     <style>
-        html,
-        body {
+        html, body {
             margin: 0;
-            background-color: lightblue;
             height: 100%;
-        }
-
-        canvas {
-            background-color: white;
-            image-rendering: -moz-crisp-edges;
-            image-rendering: -webkit-crisp-edges;
-            image-rendering: pixelated;
-            width: 50vh;
-            height: 50vh;
+            background-color: lightblue;
         }
 
         #page {
             display: flex;
-            flex-direction: row;
+        }
+
+        canvas {
+            width: 50vh;
+            height: 50vh;
+            background-color: white;
+            image-rendering: pixelated;
         }
 
         #numbersDiv {
@@ -36,85 +31,90 @@
         }
     </style>
 </head>
-
 <body>
     <div id="page">
-        <canvas></canvas>
+        <canvas id="canvas"></canvas>
         <div id="numbersDiv"></div>
     </div>
+
     <script>
-        const canvasSize = 5;
-        const canvas = document.getElementsByTagName("canvas")[0];
-        canvas.width = canvasSize;
-        canvas.height = canvasSize;
-        const ctx = canvas.getContext("2d");
-        ctx.fillStyle = 'green';
-        ctx.fillRect(0, 0, 3, 3);
-        ctx.fillStyle = 'blue';
-        ctx.fillRect(1, 1, 3, 3);
-        let imageData = ctx.getImageData(0, 0, canvasSize, canvasSize);
-        document.getElementById('numbersDiv').style.gridTemplateColumns = `repeat(${canvasSize}, 1fr)`;
+        const canvasSize = 5
+        const canvas = document.querySelector('#canvas')
+        const context = canvas.getContext('2d')
+        const numbersDiv = document.querySelector('#numbersDiv')
 
-        var tegnPiksel = drawPixel;
+        canvas.width = canvasSize
+        canvas.height = canvasSize
 
-        showNumbers();
+        context.fillStyle = 'green'
+        context.fillRect(0, 0, 3, 3)
+        context.fillStyle = 'blue'
+        context.fillRect(1, 1, 3, 3)
+
+        let imageData = context.getImageData(0, 0, canvasSize, canvasSize)
+        numbersDiv.style.gridTemplateColumns = `repeat(${canvasSize}, 1fr)`
+
+        showNumbers()
+
         function showNumbers() {
-            document.getElementById('numbersDiv').innerHTML =
-                range(0, canvasSize * canvasSize).map(createHtmlForNumber).join('');
+            numbersDiv.innerHTML = range(0, canvasSize * canvasSize)
+                .map(createHtmlForNumber)
+                .join('')
         }
 
         function createHtmlForNumber(pixelIndex) {
-            const baseIndex = pixelIndex * 4;
-            const x = pixelIndex % canvasSize;
-            const y = Math.floor(pixelIndex / canvasSize);
+            const baseIndex = pixelIndex * 4
+            const x = pixelIndex % canvasSize
+            const y = Math.floor(pixelIndex / canvasSize)
 
-            //imageData.data
             return `
                 <div class="pixel">
-                    <b>(${x},${y}):</b><br/>
+                    <b>(${x},${y}):</b><br>
                     ${range(0, 4).map(i => `
-                        ${'RGBA'[i]}: 
-                        <input type="range" min="0" max="255" step="1" 
-                               value="${imageData.data[baseIndex + i]}" 
-                               oninput="updateImage(${baseIndex + i},this.value)"
-                               onchange="showNumbers()"
-                        /> ${imageData.data[baseIndex + i]}<br/>
-                    
+                        ${'RGBA'[i]}:
+                        <input
+                            type="range"
+                            min="0"
+                            max="255"
+                            step="1"
+                            value="${imageData.data[baseIndex + i]}"
+                            oninput="updateImage(${baseIndex + i}, this.value)"
+                            onchange="showNumbers()"
+                        >
+                        ${imageData.data[baseIndex + i]}<br>
                     `).join('')}
-                    &nbsp;
                 </div>
-            `;
+            `
         }
 
         function updateImage(index, newValue) {
-            imageData.data[index] = newValue;
-            ctx.putImageData(imageData, 0, 0);
+            imageData.data[index] = newValue
+            context.putImageData(imageData, 0, 0)
         }
 
-        function drawPixel(x, y, r, g, b, a) {
-            const pixelIndex = y * canvasSize + x;
-            const index = pixelIndex * 4;
-            imageData.data[index] = r === undefined ? 0 : r;
-            imageData.data[index + 1] = g === undefined ? 0 : g;
-            imageData.data[index + 2] = b === undefined ? 0 : b;
-            imageData.data[index + 3] = a === undefined ? 255 : a;
-            ctx.putImageData(imageData, 0, 0);
-            showNumbers();
+        function tegnPiksel(x, y, r, g, b) {
+            const pixelIndex = y * canvasSize + x
+            const index = pixelIndex * 4
+
+            imageData.data[index] = r
+            imageData.data[index + 1] = g
+            imageData.data[index + 2] = b
+            imageData.data[index + 3] = 255
+
+            context.putImageData(imageData, 0, 0)
+            showNumbers()
         }
 
         function range(fromInclusive, toExclusive) {
-            const rangeLength = toExclusive - fromInclusive;
-            return Array.from(new Array(rangeLength).keys())
-                .map(n => n + fromInclusive);
+            const rangeLength = toExclusive - fromInclusive
+            return Array.from(new Array(rangeLength).keys()).map(n => n + fromInclusive)
         }
 
-        function clearCanvas() {
-            ctx.clearRect(0, 0, canvasSize, canvasSize);
-            imageData = ctx.getImageData(0, 0, canvasSize, canvasSize);
+        function fjernAlt() {
+            context.clearRect(0, 0, canvasSize, canvasSize)
+            imageData = context.getImageData(0, 0, canvasSize, canvasSize)
+            showNumbers()
         }
-
-
     </script>
 </body>
-
 </html>

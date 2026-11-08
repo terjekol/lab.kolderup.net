@@ -1,55 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="no">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Variabler – Interaktiv programmering for skolen</title>
 </head>
-
 <body>
     <div id="app"></div>
+
     <script>
-        const initalGlobals = Object.keys(window);
+        const initialGlobals = Object.keys(window)
+        const app = document.querySelector('#app')
 
-        const timer = setInterval(drawVariables, 500);
+        setInterval(drawVariables, 500)
 
-        function drawVariables(){
-            document.getElementById('app').innerHTML = 
-                getGlobalVariables()
+        function drawVariables() {
+            app.innerHTML = getGlobalVariables()
                 .map(createDrawerHtml)
-                .join('');
+                .join('')
         }
 
         function getGlobalVariables() {
-            const s = new Set(Object.keys(window));
-            for (let n of initalGlobals) {
-                s.delete(n);
-            }
-            return Array.from(s.values()).filter(n => !isFunction(window[n]));
+            return Object.keys(window)
+                .filter(name => !initialGlobals.includes(name))
+                .filter(name => typeof window[name] !== 'function')
         }
 
-        function isFunction(functionToCheck) {
-            return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
-        }
+        function createDrawerHtml(variableName) {
+            const value = window[variableName]
+            const variableValue = typeof value === 'string' ? `'${value}'` : value
 
-        function createDrawerHtml(variableName){
-            const value = window[variableName];
-            const variableValue = typeof(value)=='string' ? `'${value}'` : value;
             return `
-            <svg xmlns="http://www.w3.org/2000/svg" height="200" viewBox="0 30 100 67">
-                <line x1="40" y1="75" x2="60" y2="75" stroke="gray" stroke-width="4px" />
-                <rect x="5" y="65" width="90" height="30" fill="none" stroke="gray" stroke-width="4px"/>
-                <path d="M3 63 L25 30 L75 30 L97 63 
-                        L92 63 L 74 34 L 26 34 L 7 63    
-                Z" fill="gray" />
-                <text font-size="10" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" font-family="monospace">${variableValue}</text> 
-                <text font-size="10" x="50%" y="128%" dominant-baseline="middle" text-anchor="middle" font-family="monospace">${variableName}</text> 
-            </svg>                        
-            `;
+                <svg xmlns="http://www.w3.org/2000/svg" height="200" viewBox="0 30 100 67">
+                    <line x1="40" y1="75" x2="60" y2="75" stroke="gray" stroke-width="4" />
+                    <rect x="5" y="65" width="90" height="30" fill="none" stroke="gray" stroke-width="4" />
+                    <path d="M3 63 L25 30 L75 30 L97 63 L92 63 L74 34 L26 34 L7 63 Z" fill="gray" />
+                    <text font-size="10" x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" font-family="monospace">${variableValue}</text>
+                    <text font-size="10" x="50%" y="128%" dominant-baseline="middle" text-anchor="middle" font-family="monospace">${variableName}</text>
+                </svg>
+            `
         }
     </script>
 </body>
-
 </html>

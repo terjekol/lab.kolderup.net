@@ -1,64 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="no">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canvas med tall - playterje.com</title>
+    <title>Tegne murstein – Interaktiv programmering for skolen</title>
     <style>
-        html,
-        body {
+        html, body {
             margin: 0;
-            background-color: lightblue;
             height: 100%;
+            background-color: lightblue;
         }
 
         canvas {
-            background-color: white;
-            image-rendering: -moz-crisp-edges;
-            image-rendering: -webkit-crisp-edges;
-            image-rendering: pixelated;
             height: 100vh;
+            background-color: white;
+            image-rendering: pixelated;
         }
     </style>
 </head>
-
 <body>
-
-    <canvas></canvas>
+    <canvas id="canvas"></canvas>
 
     <script>
-        const canvasSize = 100;
-        const canvas = document.getElementsByTagName("canvas")[0];
-        canvas.width = canvasSize;
-        canvas.height = canvasSize;
-        const ctx = canvas.getContext("2d");
-        let imageData = ctx.getImageData(0, 0, canvasSize, canvasSize);
+        const canvasSize = 100
+        const canvas = document.querySelector('#canvas')
+        const context = canvas.getContext('2d')
 
-        function updateImage(index, newValue) {
-            imageData.data[index] = newValue;
-            ctx.putImageData(imageData, 0, 0);
-        }
+        canvas.width = canvasSize
+        canvas.height = canvasSize
 
-        function tegnPiksel(x, y, r, g, b, a) {
-            const pixelIndex = y * canvasSize + x;
-            const index = pixelIndex * 4;
-            imageData.data[index] = r === undefined ? 0 : r;
-            imageData.data[index + 1] = g === undefined ? 0 : g;
-            imageData.data[index + 2] = b === undefined ? 0 : b;
-            imageData.data[index + 3] = a === undefined ? 255 : a;
-            ctx.putImageData(imageData, 0, 0);
-        }
+        let imageData = context.getImageData(0, 0, canvasSize, canvasSize)
 
-        function range(fromInclusive, toExclusive) {
-            const rangeLength = toExclusive - fromInclusive;
-            return Array.from(new Array(rangeLength).keys())
-                .map(n => n + fromInclusive);
+        function tegnPiksel(x, y, r, g, b) {
+            const pixelIndex = y * canvasSize + x
+            const index = pixelIndex * 4
+
+            imageData.data[index] = r
+            imageData.data[index + 1] = g
+            imageData.data[index + 2] = b
+            imageData.data[index + 3] = 255
+
+            context.putImageData(imageData, 0, 0)
         }
 
         function fjernAlt() {
-            ctx.clearRect(0, 0, canvasSize, canvasSize);
-            imageData = ctx.getImageData(0, 0, canvasSize, canvasSize);
+            context.clearRect(0, 0, canvasSize, canvasSize)
+            imageData = context.getImageData(0, 0, canvasSize, canvasSize)
         }
 
         function tegnLinje(x, y, r, g, b) {
@@ -88,8 +75,6 @@
             tegnLinjeMedSvartRamme(x, y + 3, 255, 0, 0)
             tegnLinje(x, y + 4, 0, 0, 0)
         }
-
     </script>
 </body>
-
 </html>
